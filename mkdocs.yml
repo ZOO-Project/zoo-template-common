@@ -1,8 +1,8 @@
 site_name: zoo-template-common
 site_description: Common execution handler and utilities for ZOO-Project CWL workflow templates
-site_author: EOEPCA
-repo_url: https://github.com/EOEPCA/zoo-template-common
-repo_name: EOEPCA/zoo-template-common
+site_author: ZOO-Project
+repo_url: https://github.com/ZOO-Project/zoo-template-common
+repo_name: ZOO-Project/zoo-template-common
 
 theme:
   name: material

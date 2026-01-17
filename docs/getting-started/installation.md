@@ -15,12 +15,12 @@ pip install zoo-template-common
 
 ### Latest release
 ```bash
-pip install git+https://github.com/EOEPCA/zoo-template-common.git@main
+pip install git+https://github.com/ZOO-Project/zoo-template-common.git@main
 ```
 
 ### Specific branch
 ```bash
-pip install git+https://github.com/EOEPCA/zoo-template-common.git@feature/pythoupdates
+pip install git+https://github.com/ZOO-Project/zoo-template-common.git@feature/pythoupdates
 ```
 
 ## Development Installation
@@ -28,7 +28,7 @@ pip install git+https://github.com/EOEPCA/zoo-template-common.git@feature/pythou
 For development, clone the repository and install in editable mode:
 
 ```bash
-git clone https://github.com/EOEPCA/zoo-template-common.git
+git clone https://github.com/ZOO-Project/zoo-template-common.git
 cd zoo-template-common
 pip install -e .
 ```
