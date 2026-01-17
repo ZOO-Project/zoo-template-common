@@ -9,6 +9,11 @@ license = "BSD-3-Clause"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
+loguru = ">=0.7.0"
+pystac = ">=1.8.0"
+pyyaml = ">=6.0"
+boto3 = ">=1.28.0"
+botocore = ">=1.31.0"
 
 [build-system]
 requires = ["poetry-core"]

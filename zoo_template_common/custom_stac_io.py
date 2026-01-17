@@ -28,8 +28,7 @@ class CustomStacIO(DefaultStacIO):
         parsed = urlparse(source)
         if parsed.scheme == "s3":
             return (
-                self.s3_client.get_object(Bucket=parsed.netloc, Key=parsed.path[1:])
-                ["Body"]
+                self.s3_client.get_object(Bucket=parsed.netloc, Key=parsed.path[1:])["Body"]
                 .read()
                 .decode("utf-8")
             )
@@ -47,4 +46,3 @@ class CustomStacIO(DefaultStacIO):
             )
         else:
             super().write_text(dest, txt, *args, **kwargs)
-

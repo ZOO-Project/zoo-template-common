@@ -1,0 +1,14 @@
+# Ruff configuration for zoo-template-common
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+]
+
+[lint.per-file-ignores]
+"tests/**/*.py" = ["E402", "E501"]  # Allow imports not at top and long lines in test files
+"zoo_template_common/*.py" = ["E501"] # Allow long lines in any files
