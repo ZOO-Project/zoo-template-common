@@ -1364,7 +1364,7 @@
 <h1 id="complete-examples">Complete Examples<a class="headerlink" href="#complete-examples" title="Permanent link">&para;</a></h1>
 <p>This page provides real-world examples of using <code>zoo-template-common</code> from production templates.</p>
 <h2 id="example-1-simple-handler-zoo-service-template">Example 1: Simple Handler (zoo-service-template)<a class="headerlink" href="#example-1-simple-handler-zoo-service-template" title="Permanent link">&para;</a></h2>
-<p>The <strong>zoo-service-template</strong> (GeoLabs) shows a minimal extension of <code>CommonExecutionHandler</code>:</p>
+<p>The <strong>zoo-service-template</strong> (EOAP) shows a minimal extension of <code>CommonExecutionHandler</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">zoo_template_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">CommonExecutionHandler</span><span class="p">,</span> <span class="n">CustomStacIO</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">zoo_calrissian_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZooCalrissianRunner</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pystac.stac_io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StacIO</span>
@@ -1423,7 +1423,7 @@
 - ✅ Adds single parameter: <code>storage_platform = "eoap"</code>
 - ✅ Inherits all functionality: STAC processing, pod config, secrets handling
 - ✅ Clean and maintainable</p>
-<p><strong>Repository:</strong> <a href="https://github.com/GeoLabs/zoo-service-template">GeoLabs/zoo-service-template</a></p>
+<p><strong>Repository:</strong> <a href="https://github.com/eoap/zoo-service-template">eoap/zoo-service-template</a></p>
 <h2 id="example-2-advanced-handler-with-workspace-integration-eoepca-proc-service-template">Example 2: Advanced Handler with Workspace Integration (eoepca-proc-service-template)<a class="headerlink" href="#example-2-advanced-handler-with-workspace-integration-eoepca-proc-service-template" title="Permanent link">&para;</a></h2>
 <p>The <strong>eoepca-proc-service-template</strong> shows a more complex extension with EOEPCA Workspace API integration:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">zoo_template_common</span><span class="w"> </span><span class="kn">import</span> <span class="n">CommonExecutionHandler</span><span class="p">,</span> <span class="n">CustomStacIO</span>
@@ -1796,7 +1796,7 @@
 </code></pre></div>
 <h2 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>zoo-service-template</strong>: <a href="https://github.com/GeoLabs/zoo-service-template">github.com/GeoLabs/zoo-service-template</a></li>
+<li><strong>zoo-service-template</strong>: <a href="https://github.com/eoap/zoo-service-template">github.com/eoap/zoo-service-template</a></li>
 <li><strong>eoepca-proc-service-template</strong>: <a href="https://github.com/EOEPCA/eoepca-proc-service-template">github.com/EOEPCA/eoepca-proc-service-template</a></li>
 <li><strong>Integration Guides</strong>: See <code>INTEGRATION_ZOO_TEMPLATE_COMMON.md</code> and <code>TEMPLATE_INTEGRATION.md</code> in respective repositories</li>
 </ul>
