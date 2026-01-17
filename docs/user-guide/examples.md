@@ -4,7 +4,7 @@ This page provides real-world examples of using `zoo-template-common` from produ
 
 ## Example 1: Simple Handler (zoo-service-template)
 
-The **zoo-service-template** (GeoLabs) shows a minimal extension of `CommonExecutionHandler`:
+The **zoo-service-template** (EOAP) shows a minimal extension of `CommonExecutionHandler`:
 
 ```python
 from zoo_template_common import CommonExecutionHandler, CustomStacIO
@@ -67,7 +67,7 @@ def my_workflow(conf, inputs, outputs):
 - ✅ Inherits all functionality: STAC processing, pod config, secrets handling
 - ✅ Clean and maintainable
 
-**Repository:** [GeoLabs/zoo-service-template](https://github.com/GeoLabs/zoo-service-template)
+**Repository:** [eoap/zoo-service-template](https://github.com/eoap/zoo-service-template)
 
 ## Example 2: Advanced Handler with Workspace Integration (eoepca-proc-service-template)
 
@@ -452,7 +452,7 @@ def test_eoepca_handler_jwt():
 
 ## Additional Resources
 
-- **zoo-service-template**: [github.com/GeoLabs/zoo-service-template](https://github.com/GeoLabs/zoo-service-template)
+- **zoo-service-template**: [github.com/eoap/zoo-service-template](https://github.com/eoap/zoo-service-template)
 - **eoepca-proc-service-template**: [github.com/EOEPCA/eoepca-proc-service-template](https://github.com/EOEPCA/eoepca-proc-service-template)
 - **Integration Guides**: See `INTEGRATION_ZOO_TEMPLATE_COMMON.md` and `TEMPLATE_INTEGRATION.md` in respective repositories
 

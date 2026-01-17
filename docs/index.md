@@ -43,7 +43,7 @@ def my_workflow(conf, inputs, outputs):
 ## Templates Using This Package
 
 - **eoepca-proc-service-template**: Extends CommonExecutionHandler with EOEPCA Workspace API integration
-- **zoo-service-template** (GeoLabs): Uses CommonExecutionHandler as-is or extends it
+- **zoo-service-template** (EOAP): Uses CommonExecutionHandler as-is or extends it
 
 ## Installation
 
