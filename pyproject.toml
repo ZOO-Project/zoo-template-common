@@ -8,7 +8,7 @@ packages = [{ include = "zoo_template_common" }]
 license = "BSD-3-Clause"
 
 [tool.poetry.dependencies]
-python = ">=3.8"
+python = ">=3.10"
 zoo-runner-common = ">=0.1.0"
 loguru = ">=0.7.0"
 pystac = ">=1.8.0"
