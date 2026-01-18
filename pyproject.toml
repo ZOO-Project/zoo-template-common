@@ -1,11 +1,27 @@
 [tool.poetry]
 name = "zoo-template-common"
-version = "0.1.0"
+version = "0.1.1"
 description = "Shared utilities and base service templates for ZOO CWL runners"
-authors = ["Aryan Khare <kharearyan78@gmail.com>"]
+authors = [
+    "Aryan Khare <kharearyan78@gmail.com>",
+    "Gérald Fenoy <gerald.fenoy@geolabs.fr>"
+]
 readme = "README.md"
 packages = [{ include = "zoo_template_common" }]
-license = "BSD-3-Clause"
+license = "Apache-2.0"
+homepage = "https://github.com/ZOO-Project/zoo-template-common"
+repository = "https://github.com/ZOO-Project/zoo-template-common"
+documentation = "https://zoo-project.github.io/zoo-template-common/"
+keywords = ["zoo-project", "cwl", "template", "eoepca", "stac", "workflow"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
 
 [tool.poetry.dependencies]
 python = ">=3.10"
