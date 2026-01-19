@@ -10,8 +10,10 @@ from pystac import Catalog, Collection, read_file
 from pystac.item_collection import ItemCollection
 from pystac.stac_io import StacIO
 
+from zoo_runner_common.handlers import ExecutionHandler
 
-class CommonExecutionHandler:
+
+class CommonExecutionHandler(ExecutionHandler):
     """Simple execution handler for ZOO-Project CWL workflows.
 
     This class provides basic functionality for handling CWL workflow execution
@@ -52,7 +54,7 @@ class CommonExecutionHandler:
             try:
                 logger.info(f"Catalog : {dir(cat)}")
                 collection: Collection = next(cat.get_all_collections())
-            except Exception:
+            except Exception as e:
                 logger.error("No collection found in the output catalog")
                 output["collection"] = json.dumps({}, indent=2)
                 return
@@ -66,18 +68,22 @@ class CommonExecutionHandler:
                     logger.info(f"Processing asset {asset_key}")
 
                     temp_asset = item.assets[asset_key].to_dict()
-                    temp_asset["storage:platform"] = self.get_additional_parameters().get(
-                        "storage_platform", "default"
+                    temp_asset["storage:platform"] = (
+                        self.get_additional_parameters().get(
+                            "storage_platform", "default"
+                        )
                     )
                     temp_asset["storage:requester_pays"] = False
                     temp_asset["storage:tier"] = "Standard"
                     temp_asset["storage:region"] = self.get_additional_parameters().get(
                         "region_name", "default"
                     )
-                    temp_asset["storage:endpoint"] = self.get_additional_parameters().get(
-                        "endpoint_url", ""
+                    temp_asset["storage:endpoint"] = (
+                        self.get_additional_parameters().get("endpoint_url", "")
                     )
-                    item.assets[asset_key] = item.assets[asset_key].from_dict(temp_asset)
+                    item.assets[asset_key] = item.assets[asset_key].from_dict(
+                        temp_asset
+                    )
 
                 item.collection_id = collection_id
                 items.append(item.clone())
@@ -105,7 +111,9 @@ class CommonExecutionHandler:
         os.environ["AWS_S3_REGION"] = additional_params.get("region_name", "")
         os.environ["AWS_S3_ENDPOINT"] = additional_params.get("endpoint_url", "")
         os.environ["AWS_ACCESS_KEY_ID"] = additional_params.get("aws_access_key_id", "")
-        os.environ["AWS_SECRET_ACCESS_KEY"] = additional_params.get("aws_secret_access_key", "")
+        os.environ["AWS_SECRET_ACCESS_KEY"] = additional_params.get(
+            "aws_secret_access_key", ""
+        )
 
         logger.info("Post execution hook")
 
@@ -125,7 +133,7 @@ class CommonExecutionHandler:
     def local_get_file(fileName):
         """Read and load the contents of a yaml file."""
         try:
-            with open(fileName) as file:
+            with open(fileName, "r") as file:
                 data = yaml.safe_load(file)
             return data
         except (FileNotFoundError, yaml.YAMLError, yaml.scanner.ScannerError):
@@ -152,7 +160,9 @@ class CommonExecutionHandler:
         """Get secrets for the pod spawned by calrissian."""
         logger.info("get_secrets")
         secrets = {
-            "imagePullSecrets": self.local_get_file("/assets/pod_imagePullSecrets.yaml"),
+            "imagePullSecrets": self.local_get_file(
+                "/assets/pod_imagePullSecrets.yaml"
+            ),
             "additionalImagePullSecrets": self.local_get_file(
                 "/assets/pod_additionalImagePullSecrets.yaml"
             ),
