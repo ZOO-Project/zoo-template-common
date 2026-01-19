@@ -3,7 +3,7 @@
 import os
 from urllib.parse import urlparse
 
-import botocore
+import botocore.session
 from botocore.client import Config
 from pystac.stac_io import DefaultStacIO
 
