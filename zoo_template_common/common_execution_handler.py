@@ -21,11 +21,6 @@ class CommonExecutionHandler(ExecutionHandler):
     with Workspace API integration), extend this class and override the hooks.
     """
 
-    def __init__(self, conf, outputs=None):
-        self.conf = conf
-        self.outputs = outputs or {}
-        self.results = None
-
     def pre_execution_hook(self):
         """Hook to run before execution. Override in subclasses for custom behavior."""
         logger.info("Pre execution hook")
