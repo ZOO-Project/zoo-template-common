@@ -86,11 +86,8 @@ class CommonExecutionHandler(ExecutionHandler):
         item_collection = ItemCollection(items=items)
         logger.info("Created feature collection from items")
 
-        # Trap the case of no output collection
-        if item_collection is None:
-            logger.error("The output collection is empty")
-            output["collection"] = json.dumps({}, indent=2)
-            return
+        if not items:
+            logger.warning("The output item collection is empty")
 
         # Set the feature collection to be returned
         output["collection"] = item_collection.to_dict()
@@ -130,8 +127,12 @@ class CommonExecutionHandler(ExecutionHandler):
         try:
             with open(fileName, "r") as file:
                 data = yaml.safe_load(file)
-            return data
-        except (FileNotFoundError, yaml.YAMLError, yaml.scanner.ScannerError):
+            return data or {}
+        except FileNotFoundError:
+            logger.debug("Secret file not found: %s", fileName)
+            return {}
+        except yaml.YAMLError as e:
+            logger.warning("Failed to parse YAML file %s: %s", fileName, e)
             return {}
 
     def get_pod_env_vars(self) -> dict[str, str]:
@@ -147,7 +148,7 @@ class CommonExecutionHandler(ExecutionHandler):
     def get_additional_parameters(self) -> dict[str, str]:
         """Get additional parameters for the execution."""
         logger.info("get_additional_parameters")
-        additional_parameters = self.conf.get("additional_parameters", {})
+        additional_parameters = dict(self.conf.get("additional_parameters", {}))
         additional_parameters["sub_path"] = self.conf["lenv"]["usid"]
         return additional_parameters
 
@@ -189,7 +190,9 @@ class CommonExecutionHandler(ExecutionHandler):
             ]
 
             cindex = 0
-            if "service_logs" in self.conf:
+            if "service_logs" not in self.conf:
+                self.conf["service_logs"] = {}
+            else:
                 cindex = 1
 
             for i in range(len(services_logs)):
@@ -198,8 +201,6 @@ class CommonExecutionHandler(ExecutionHandler):
                 if cindex > 0:
                     for j in range(len(keys)):
                         keys[j] = keys[j] + "_" + str(cindex)
-                if "service_logs" not in self.conf:
-                    self.conf["service_logs"] = {}
                 for j in range(len(keys)):
                     self.conf["service_logs"][keys[j]] = services_logs[i][okeys[j]]
                 cindex += 1

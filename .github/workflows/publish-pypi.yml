@@ -31,32 +31,24 @@ jobs:
         with:
           python-version: '3.11'
       
-      - name: Install Poetry
+      - name: Install build tools
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-      
-      - name: Configure Poetry
-        run: |
-          poetry config virtualenvs.create true
-          poetry config virtualenvs.in-project true
+          python -m pip install --upgrade pip
+          pip install hatch
       
       - name: Update version (if manual trigger)
         if: github.event_name == 'workflow_dispatch'
         run: |
-          poetry version ${{ inputs.version }}
+          echo '__version__ = "${{ inputs.version }}"' > zoo_template_common/__about__.py
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add pyproject.toml
+          git add zoo_template_common/__about__.py
           git commit -m "chore: bump version to ${{ inputs.version }}"
           git tag "v${{ inputs.version }}"
           git push origin main --tags
       
-      - name: Install dependencies
-        run: poetry install --no-interaction
-      
       - name: Build package
-        run: poetry build
+        run: hatch build
       
       - name: Publish to PyPI (Trusted Publishing)
         uses: pypa/gh-action-pypi-publish@release/v1

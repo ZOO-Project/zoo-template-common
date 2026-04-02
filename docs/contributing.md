@@ -6,9 +6,9 @@ Thank you for your interest in contributing to zoo-template-common! This documen
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - Git
-- Poetry (recommended) or pip
+- Hatch
 
 ### Development Setup
 
@@ -19,26 +19,14 @@ git clone https://github.com/YOUR-USERNAME/zoo-template-common.git
 cd zoo-template-common
 ```
 
-2. **Create Virtual Environment**
+2. **Install Hatch and run tests**
 
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install hatch
+hatch run test
 ```
 
-3. **Install Dependencies**
-
-With Poetry:
-```bash
-poetry install
-```
-
-Or with pip:
-```bash
-pip install -e ".[dev]"
-```
-
-4. **Verify Installation**
+3. **Verify Installation**
 
 ```bash
 python -c "from zoo_template_common import CommonExecutionHandler; print('OK')"
@@ -311,20 +299,19 @@ When adding features:
 
 ## Release Process
 
-1. Update version in `pyproject.toml`
+1. Update version in `zoo_template_common/__about__.py`
 2. Update `CHANGELOG.md`
 3. Create release tag
 4. Build and publish to PyPI
 
 ```bash
-# Update version
-poetry version patch  # or minor, major
+# Update version (edit zoo_template_common/__about__.py)
+# e.g.: __version__ = "0.2.0"
 
 # Build
-poetry build
+hatch build
 
-# Publish (maintainers only)
-poetry publish
+# Publish is handled automatically by the publish-pypi GitHub Action
 ```
 
 ## Getting Help

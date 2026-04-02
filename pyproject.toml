@@ -1,17 +1,18 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
 name = "zoo-template-common"
-version = "0.1.5"
+dynamic = ["version"]
 description = "Shared utilities and base service templates for ZOO CWL runners"
-authors = [
-    "Aryan Khare <kharearyan78@gmail.com>",
-    "Gérald Fenoy <gerald.fenoy@geolabs.fr>"
-]
 readme = "README.md"
-packages = [{ include = "zoo_template_common" }]
-license = "Apache-2.0"
-homepage = "https://github.com/ZOO-Project/zoo-template-common"
-repository = "https://github.com/ZOO-Project/zoo-template-common"
-documentation = "https://zoo-project.github.io/zoo-template-common/"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Aryan Khare", email = "kharearyan78@gmail.com" },
+    { name = "Gérald Fenoy", email = "gerald.fenoy@geolabs.fr" },
+]
 keywords = ["zoo-project", "cwl", "template", "eoepca", "stac", "workflow"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -22,23 +23,71 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
+dependencies = [
+    "zoo-runner-common>=0.1.3",
+    "loguru>=0.7.0",
+    "pystac>=1.8.0",
+    "pyyaml>=6.0",
+    "boto3>=1.28.0",
+    "botocore>=1.31.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10"
-zoo-runner-common = ">=0.1.3"
-loguru = ">=0.7.0"
-pystac = ">=1.8.0"
-pyyaml = ">=6.0"
-boto3 = ">=1.28.0"
-botocore = ">=1.31.0"
+[project.urls]
+Homepage = "https://github.com/ZOO-Project/zoo-template-common"
+Documentation = "https://zoo-project.github.io/zoo-template-common/"
+Repository = "https://github.com/ZOO-Project/zoo-template-common"
+Issues = "https://github.com/ZOO-Project/zoo-template-common/issues"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.hatch.version]
+path = "zoo_template_common/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest>=7",
+]
+# Install the local zoo-runner-common in development so that unpublished
+# dependency declarations (attrs, cwl-utils) are picked up correctly.
+# Remove this block once zoo-runner-common >=0.1.4 is published on PyPI.
+#post-install-commands = [
+#    "pip install -e {root}/../zoo-runner-common",
+#]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "pytest --cov=zoo_template_common {args:tests}"
+
+# hatch test uses the hatch-test environment; override zoo-runner-common with
+# the local path so that attrs/cwl-utils are available before 0.1.4 is published.
+#[tool.hatch.envs.hatch-test]
+#extra-dependencies = [
+#    "zoo-runner-common @ {root:uri}/../zoo-runner-common",
+#]
+
+[tool.coverage.run]
+source_pkgs = ["zoo_template_common", "tests"]
+branch = true
+parallel = true
+omit = [
+    "zoo_template_common/__about__.py",
+]
+
+[tool.coverage.paths]
+zoo_template_common = ["zoo_template_common"]
+tests = ["tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.black]
 line-length = 100
-target-version = ['py310']
+target-version = ["py310"]
 
 [tool.isort]
 profile = "black"

@@ -30,6 +30,15 @@ Or from Git:
 pip install git+https://github.com/ZOO-Project/zoo-template-common.git@main
 ```
 
+As a dependency in another project, add to your `pyproject.toml`:
+
+```toml
+[project]
+dependencies = [
+    "zoo-template-common>=0.1.0",
+]
+```
+
 ## Usage
 
 ### Basic Usage
@@ -143,13 +152,18 @@ conf = {
 git clone https://github.com/ZOO-Project/zoo-template-common.git
 cd zoo-template-common
 
-# Install in development mode
-pip install -e .
+# Install Hatch and run tests
+pip install hatch
+hatch run test
+
+# Build distributions
+hatch build
 ```
 
 ## Requirements
 
-- Python >= 3.8
+- Python >= 3.10
+- zoo-runner-common >= 0.1.3
 - loguru >= 0.7.0
 - pystac >= 1.8.0
 - pyyaml >= 6.0

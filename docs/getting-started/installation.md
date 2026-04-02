@@ -2,8 +2,8 @@
 
 ## Requirements
 
-- Python >= 3.8
-- pip or poetry
+- Python >= 3.10
+- pip or hatch
 
 ## Install from PyPI
 
@@ -18,25 +18,28 @@ pip install zoo-template-common
 pip install git+https://github.com/ZOO-Project/zoo-template-common.git@main
 ```
 
-### Specific branch
-```bash
-pip install git+https://github.com/ZOO-Project/zoo-template-common.git@feature/pythoupdates
-```
-
 ## Development Installation
 
-For development, clone the repository and install in editable mode:
+For development, clone the repository and use Hatch:
 
 ```bash
 git clone https://github.com/ZOO-Project/zoo-template-common.git
 cd zoo-template-common
-pip install -e .
+pip install hatch
+hatch run test
+```
+
+To build the package locally:
+
+```bash
+hatch build
 ```
 
 ## Dependencies
 
 The package automatically installs the following dependencies:
 
+- zoo-runner-common >= 0.1.3
 - loguru >= 0.7.0
 - pystac >= 1.8.0
 - pyyaml >= 6.0

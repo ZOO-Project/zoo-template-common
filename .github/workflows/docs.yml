@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/pythoupdates
   pull_request:
     branches:
       - main
@@ -27,6 +26,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip install mkdocs-material mkdocstrings[python] pymdown-extensions
+          pip install zoo-runner-common
+          pip install .
           
       - name: Build documentation
         run: mkdocs build
