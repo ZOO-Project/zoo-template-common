@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "zoo-template-common"
-version = "0.1.5"
+version = "0.1.6"
 description = "Shared utilities and base service templates for ZOO CWL runners"
 authors = [
     "Aryan Khare <kharearyan78@gmail.com>",

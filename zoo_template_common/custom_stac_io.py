@@ -12,6 +12,7 @@ class CustomStacIO(DefaultStacIO):
     """Custom STAC IO class that uses boto3 to read/write from S3."""
 
     def __init__(self):
+        super().__init()
         self.session = botocore.session.Session()
         self.s3_client = self.session.create_client(
             service_name="s3",

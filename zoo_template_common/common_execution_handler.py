@@ -6,9 +6,11 @@ import traceback
 
 import yaml
 from loguru import logger
-from pystac import Catalog, Collection, read_file
+from pystac import Catalog, Collection, Item, Asset, read_file
 from pystac.item_collection import ItemCollection
 from pystac.stac_io import StacIO
+import mimetypes
+from datetime import datetime, timezone
 
 from zoo_runner_common.handlers import ExecutionHandler
 
@@ -35,14 +37,41 @@ class CommonExecutionHandler(ExecutionHandler):
             values[outputName] = [values[outputName]]
 
         items = []
+        collection_id = self.get_additional_parameters()["sub_path"]
+        logger.info(f"Create collection with ID {collection_id}")
 
         for i in range(len(values[outputName])):
             if values[outputName][i] is None:
                 break
-            cat: Catalog = read_file(values[outputName][i]["value"])
-
-            collection_id = self.get_additional_parameters()["sub_path"]
-            logger.info(f"Create collection with ID {collection_id}")
+            value_uri = str(values[outputName][i]["value"]).strip()
+            logger.info(f"setOutput: reading STAC catalog from '{value_uri}'")
+            # If the URI is not a JSON file (e.g. raw staged file like .png, .parquet),
+            # try to find catalog.json at the canonical path, or create a minimal item.
+            if not value_uri.endswith(".json"):
+                logger.warning(
+                    f"Output '{outputName}' value '{value_uri}' is not a STAC catalog JSON. "
+                    f"Creating a minimal STAC item directly."
+                )
+                basename = os.path.basename(str(value_uri).rstrip("/"))
+                mime_type, _ = mimetypes.guess_type(basename)
+                if mime_type is None:
+                    mime_type = "application/octet-stream"
+                item = Item(
+                    id=outputName,
+                    geometry=None,
+                    bbox=None,
+                    datetime=datetime.now(tz=timezone.utc),
+                    properties={},
+                )
+                item.add_asset("data", Asset(
+                    href=str(value_uri),
+                    media_type=mime_type,
+                    roles=["data"],
+                ))
+                item.collection_id = collection_id
+                items.append(item)
+                continue
+            cat: Catalog = read_file(value_uri)
 
             collection = None
 
