@@ -1,17 +1,16 @@
 # common/common_execution_handler.py
 
 import json
+import mimetypes
 import os
 import traceback
+from datetime import datetime, timezone
 
 import yaml
 from loguru import logger
-from pystac import Catalog, Collection, Item, Asset, read_file
+from pystac import Asset, Catalog, Collection, Item, read_file
 from pystac.item_collection import ItemCollection
 from pystac.stac_io import StacIO
-import mimetypes
-from datetime import datetime, timezone
-
 from zoo_runner_common.handlers import ExecutionHandler
 
 
@@ -78,7 +77,7 @@ class CommonExecutionHandler(ExecutionHandler):
             try:
                 logger.info(f"Catalog : {dir(cat)}")
                 collection: Collection = next(cat.get_all_collections())
-            except Exception as e:
+            except Exception:
                 logger.error("No collection found in the output catalog")
                 output["collection"] = json.dumps({}, indent=2)
                 return
@@ -157,7 +156,7 @@ class CommonExecutionHandler(ExecutionHandler):
     def local_get_file(fileName):
         """Read and load the contents of a yaml file."""
         try:
-            with open(fileName, "r") as file:
+            with open(fileName) as file:
                 data = yaml.safe_load(file)
             return data
         except (FileNotFoundError, yaml.YAMLError, yaml.scanner.ScannerError):
@@ -197,11 +196,6 @@ class CommonExecutionHandler(ExecutionHandler):
         """Handle the output files of the execution and register tool logs."""
         try:
             logger.info("handle_outputs")
-
-            # Update tmpUrl with user path
-            self.conf["main"]["tmpUrl"] = self.conf["main"]["tmpUrl"].replace(
-                "temp/", self.conf["auth_env"]["user"] + "/temp/"
-            )
 
             # Create service logs entries
             services_logs = [
