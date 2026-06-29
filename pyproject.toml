@@ -16,6 +16,8 @@ packages = [{ include = "zoo_template_common" }]
 license = "Apache-2.0"
 homepage = "https://github.com/ZOO-Project/zoo-template-common"
 repository = "https://github.com/ZOO-Project/zoo-template-common"
+Issues = "https://github.com/ZOO-Project/zoo-template-common/issues"
+Changelog = "https://github.com/ZOO-Project/zoo-template-common/blob/main/CHANGELOG.md"
 documentation = "https://zoo-project.github.io/zoo-template-common/"
 keywords = ["zoo-project", "cwl", "template", "eoepca", "stac", "workflow"]
 classifiers = [
