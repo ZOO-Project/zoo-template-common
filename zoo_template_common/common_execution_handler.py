@@ -16,7 +16,9 @@ try:
     import zoo
 except ImportError:
     from zoo_runner_common.zoostub import ZooStub
+
     zoo = ZooStub()
+
 
 class CommonExecutionHandler(ExecutionHandler):
     """Simple execution handler for ZOO-Project CWL workflows.
