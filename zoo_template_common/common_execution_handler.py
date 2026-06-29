@@ -7,12 +7,16 @@ import traceback
 from datetime import datetime, timezone
 
 import yaml
-from loguru import logger
 from pystac import Asset, Catalog, Collection, Item, read_file
 from pystac.item_collection import ItemCollection
 from pystac.stac_io import StacIO
 from zoo_runner_common.handlers import ExecutionHandler
 
+try:
+    import zoo
+except ImportError:
+    from zoo_runner_common.zoostub import ZooStub
+    zoo = ZooStub()
 
 class CommonExecutionHandler(ExecutionHandler):
     """Simple execution handler for ZOO-Project CWL workflows.
@@ -24,30 +28,30 @@ class CommonExecutionHandler(ExecutionHandler):
 
     def pre_execution_hook(self):
         """Hook to run before execution. Override in subclasses for custom behavior."""
-        logger.info("Pre execution hook")
+        zoo.info("Pre execution hook")
 
     def setOutput(self, outputName, values):
         """Process and set output values from STAC catalog."""
         output = self.outputs[outputName]
-        logger.info(f"Read catalog from STAC Catalog URI: {output} -> {values}")
+        zoo.info(f"Read catalog from STAC Catalog URI: {output} -> {values}")
 
         if not isinstance(values[outputName], list):
-            logger.info(f"values[{outputName}] is not a list, transform to an array")
+            zoo.info(f"values[{outputName}] is not a list, transform to an array")
             values[outputName] = [values[outputName]]
 
         items = []
         collection_id = self.get_additional_parameters()["sub_path"]
-        logger.info(f"Create collection with ID {collection_id}")
+        zoo.info(f"Create collection with ID {collection_id}")
 
         for i in range(len(values[outputName])):
             if values[outputName][i] is None:
                 break
             value_uri = str(values[outputName][i]["value"]).strip()
-            logger.info(f"setOutput: reading STAC catalog from '{value_uri}'")
+            zoo.info(f"setOutput: reading STAC catalog from '{value_uri}'")
             # If the URI is not a JSON file (e.g. raw staged file like .png, .parquet),
             # try to find catalog.json at the canonical path, or create a minimal item.
             if not value_uri.endswith(".json"):
-                logger.warning(
+                zoo.warning(
                     f"Output '{outputName}' value '{value_uri}' is not a STAC catalog JSON. "
                     f"Creating a minimal STAC item directly."
                 )
@@ -78,20 +82,20 @@ class CommonExecutionHandler(ExecutionHandler):
             collection = None
 
             try:
-                logger.info(f"Catalog : {dir(cat)}")
+                zoo.info(f"Catalog : {dir(cat)}")
                 collection: Collection = next(cat.get_all_collections())
             except Exception:
-                logger.error("No collection found in the output catalog")
+                zoo.error("No collection found in the output catalog")
                 output["collection"] = json.dumps({}, indent=2)
                 return
 
-            logger.info(f"Got collection {collection.id} from processing outputs")
+            zoo.info(f"Got collection {collection.id} from processing outputs")
 
             for item in collection.get_all_items():
-                logger.info(f"Processing item {item.id}")
+                zoo.info(f"Processing item {item.id}")
 
                 for asset_key in item.assets.keys():
-                    logger.info(f"Processing asset {asset_key}")
+                    zoo.info(f"Processing asset {asset_key}")
 
                     temp_asset = item.assets[asset_key].to_dict()
                     temp_asset["storage:platform"] = (
@@ -115,11 +119,11 @@ class CommonExecutionHandler(ExecutionHandler):
                 items.append(item.clone())
 
         item_collection = ItemCollection(items=items)
-        logger.info("Created feature collection from items")
+        zoo.info("Created feature collection from items")
 
         # Trap the case of no output collection
         if item_collection is None:
-            logger.error("The output collection is empty")
+            zoo.error("The output collection is empty")
             output["collection"] = json.dumps({}, indent=2)
             return
 
@@ -141,18 +145,18 @@ class CommonExecutionHandler(ExecutionHandler):
             "aws_secret_access_key", ""
         )
 
-        logger.info("Post execution hook")
+        zoo.info("Post execution hook")
 
         from zoo_template_common.custom_stac_io import CustomStacIO
 
         StacIO.set_default(CustomStacIO)
 
         for i in self.outputs:
-            logger.info(f"Output {i}: {self.outputs[i]}")
+            zoo.info(f"Output {i}: {self.outputs[i]}")
             if "mimeType" in self.outputs[i]:
                 self.setOutput(i, output)
             else:
-                logger.warning(f"Output {i} has no mimeType, skipping...")
+                zoo.warning(f"Output {i} has no mimeType, skipping...")
                 self.outputs[i]["value"] = str(output[i])
 
     @staticmethod
@@ -167,24 +171,24 @@ class CommonExecutionHandler(ExecutionHandler):
 
     def get_pod_env_vars(self) -> dict[str, str]:
         """Get environment variables for the pod spawned by calrissian."""
-        logger.info("get_pod_env_vars")
+        zoo.info("get_pod_env_vars")
         return self.conf.get("pod_env_vars", {})
 
     def get_pod_node_selector(self) -> dict[str, str]:
         """Get node selector for the pod spawned by calrissian."""
-        logger.info("get_pod_node_selector")
+        zoo.info("get_pod_node_selector")
         return self.conf.get("pod_node_selector", {})
 
     def get_additional_parameters(self) -> dict[str, str]:
         """Get additional parameters for the execution."""
-        logger.info("get_additional_parameters")
+        zoo.info("get_additional_parameters")
         additional_parameters = self.conf.get("additional_parameters", {})
         additional_parameters["sub_path"] = self.conf["lenv"]["usid"]
         return additional_parameters
 
     def get_secrets(self):
         """Get secrets for the pod spawned by calrissian."""
-        logger.info("get_secrets")
+        zoo.info("get_secrets")
         secrets = {
             "imagePullSecrets": self.local_get_file(
                 "/assets/pod_imagePullSecrets.yaml"
@@ -198,7 +202,7 @@ class CommonExecutionHandler(ExecutionHandler):
     def handle_outputs(self, log, output, usage_report, tool_logs):
         """Handle the output files of the execution and register tool logs."""
         try:
-            logger.info("handle_outputs")
+            zoo.info("handle_outputs")
 
             # Create service logs entries
             services_logs = [
@@ -229,12 +233,12 @@ class CommonExecutionHandler(ExecutionHandler):
                 for j in range(len(keys)):
                     self.conf["service_logs"][keys[j]] = services_logs[i][okeys[j]]
                 cindex += 1
-                logger.warning(f"service_logs: {self.conf['service_logs']}")
+                zoo.warning(f"service_logs: {self.conf['service_logs']}")
 
             self.conf["service_logs"]["length"] = str(cindex)
-            logger.info(f"service_logs: {self.conf['service_logs']}")
+            zoo.info(f"service_logs: {self.conf['service_logs']}")
 
         except Exception as e:
-            logger.error("ERROR in handle_outputs...")
-            logger.error(traceback.format_exc())
+            zoo.error("ERROR in handle_outputs...")
+            zoo.error(traceback.format_exc())
             raise (e)
