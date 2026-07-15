@@ -16,7 +16,9 @@ try:
     import zoo
 except ImportError:
     from zoo_runner_common.zoostub import ZooStub
+
     zoo = ZooStub()
+
 
 class CommonExecutionHandler(ExecutionHandler):
     """Simple execution handler for ZOO-Project CWL workflows.
@@ -66,11 +68,14 @@ class CommonExecutionHandler(ExecutionHandler):
                     datetime=datetime.now(tz=timezone.utc),
                     properties={},
                 )
-                item.add_asset("data", Asset(
-                    href=str(value_uri),
-                    media_type=mime_type,
-                    roles=["data"],
-                ))
+                item.add_asset(
+                    "data",
+                    Asset(
+                        href=str(value_uri),
+                        media_type=mime_type,
+                        roles=["data"],
+                    ),
+                )
                 item.collection_id = collection_id
                 items.append(item)
                 continue
