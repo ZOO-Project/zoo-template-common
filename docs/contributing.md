@@ -172,8 +172,6 @@ def get_stac_catalog(self, location: str) -> dict:
 
 ### Error Handling
 
-Catch specific exceptions and use structured logging via `loguru`:
-
 ````python
 try:
     import zoo
