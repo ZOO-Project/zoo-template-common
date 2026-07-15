@@ -173,22 +173,23 @@ def get_stac_catalog(self, location: str) -> dict:
 ### Error Handling
 
 ````python
-try:
-    import zoo
-except ImportError:
-    from zoo_runner_common import ZooStub
-    zoo = ZooStub()
-
-def load_config(self, path: str) -> dict:
-    """Load configuration from a YAML file."""
+# Good
+def load_file(self, path: str) -> dict:
+    """Load YAML file."""
     try:
         with open(path) as f:
             return yaml.safe_load(f)
     except FileNotFoundError:
-        zoo.update_status(conf, 0)  
+        self.logger.warning(f"File not found: {path}")
         return {}
     except yaml.YAMLError as e:
+        self.logger.error(f"Invalid YAML: {e}")
         raise
+
+# Bad
+def load_file(self, path):
+    with open(path) as f:
+        return yaml.safe_load(f)
 ````
 
 ### Versioning
