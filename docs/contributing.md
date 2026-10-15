@@ -186,6 +186,7 @@ def load_file(self, path: str) -> dict:
         self.logger.error(f"Invalid YAML: {e}")
         raise
 
+
 # Bad
 def load_file(self, path):
     with open(path) as f:
@@ -209,8 +210,8 @@ Place unit tests under `tests/` and name files `test_*.py`. Test discovery is co
 import unittest
 from zoo_template_common import CommonExecutionHandler
 
-class TestCommonExecutionHandler(unittest.TestCase):
 
+class TestCommonExecutionHandler(unittest.TestCase):
     def test_initialization(self):
         """Test that the handler initializes correctly."""
         conf = {"lenv": {"message": ""}}

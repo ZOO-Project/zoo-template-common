@@ -80,6 +80,7 @@ import jwt
 import requests
 import os
 
+
 class EoepcaCalrissianRunnerExecutionHandler(CommonExecutionHandler):
     """EOEPCA-specific execution handler with Workspace API integration."""
 
@@ -123,9 +124,9 @@ class EoepcaCalrissianRunnerExecutionHandler(CommonExecutionHandler):
         if self.workspace_url and self.username:
             workspace_api_endpoint = os.path.join(
                 self.workspace_url,
-                f"workspaces/{self.workspace_prefix}-{self.username}"
+                f"workspaces/{self.workspace_prefix}-{self.username}",
             )
-            
+
             headers = {"accept": "application/json"}
             if self.ades_rx_token:
                 headers["Authorization"] = f"Bearer {self.ades_rx_token}"
@@ -137,13 +138,19 @@ class EoepcaCalrissianRunnerExecutionHandler(CommonExecutionHandler):
                 storage_credentials = workspace_data["storage"]["credentials"]
 
                 # Update stage-out configuration with user's workspace credentials
-                self.conf["additional_parameters"].update({
-                    "STAGEOUT_AWS_SERVICEURL": storage_credentials.get("endpoint"),
-                    "STAGEOUT_AWS_ACCESS_KEY_ID": storage_credentials.get("access"),
-                    "STAGEOUT_AWS_SECRET_ACCESS_KEY": storage_credentials.get("secret"),
-                    "STAGEOUT_AWS_REGION": storage_credentials.get("region"),
-                    "STAGEOUT_OUTPUT": workspace_data["storage"].get("buckets", {}).get("outputs")
-                })
+                self.conf["additional_parameters"].update(
+                    {
+                        "STAGEOUT_AWS_SERVICEURL": storage_credentials.get("endpoint"),
+                        "STAGEOUT_AWS_ACCESS_KEY_ID": storage_credentials.get("access"),
+                        "STAGEOUT_AWS_SECRET_ACCESS_KEY": storage_credentials.get(
+                            "secret"
+                        ),
+                        "STAGEOUT_AWS_REGION": storage_credentials.get("region"),
+                        "STAGEOUT_OUTPUT": workspace_data["storage"]
+                        .get("buckets", {})
+                        .get("outputs"),
+                    }
+                )
 
     def post_execution_hook(self, log, output, usage_report, tool_logs):
         """Process results and register to Workspace Catalogue."""
@@ -162,18 +169,15 @@ class EoepcaCalrissianRunnerExecutionHandler(CommonExecutionHandler):
 
         register_endpoint = os.path.join(
             self.workspace_url,
-            f"workspaces/{self.workspace_prefix}-{self.username}/register"
+            f"workspaces/{self.workspace_prefix}-{self.username}/register",
         )
 
-        headers = {
-            "accept": "application/json",
-            "Content-Type": "application/json"
-        }
+        headers = {"accept": "application/json", "Content-Type": "application/json"}
         if self.ades_rx_token:
             headers["Authorization"] = f"Bearer {self.ades_rx_token}"
 
         payload = {"stac_catalog_uri": stac_catalog_url}
-        
+
         response = requests.post(register_endpoint, headers=headers, json=payload)
         if response.ok:
             logger.info("Successfully registered outputs to Workspace Catalogue")
@@ -190,8 +194,7 @@ def my_workflow(conf, inputs, outputs):
 
         # Create EOEPCA handler
         execution_handler = EoepcaCalrissianRunnerExecutionHandler(
-            conf=conf, 
-            outputs=outputs
+            conf=conf, outputs=outputs
         )
 
         # Create runner
@@ -206,7 +209,7 @@ def my_workflow(conf, inputs, outputs):
         # Execute workflow
         exit_status = runner.execute()
         return exit_status
-        
+
     except Exception as e:
         conf["lenv"]["message"] = str(e)
         return 4  # SERVICE_FAILED
@@ -251,20 +254,15 @@ pip install zoo-calrissian-runner  # or zoo-argowf-runner, zoo-wes-runner
 
 ```python
 conf = {
-    "lenv": {
-        "usid": "unique-execution-id",
-        "Identifier": "my-workflow"
-    },
-    "main": {
-        "tmpPath": "/tmp/zoo"
-    },
+    "lenv": {"usid": "unique-execution-id", "Identifier": "my-workflow"},
+    "main": {"tmpPath": "/tmp/zoo"},
     "additional_parameters": {
         # S3 configuration
         "aws_access_key_id": "ACCESS_KEY",
         "aws_secret_access_key": "SECRET_KEY",
         "endpoint_url": "https://s3.example.com",
-        "region_name": "us-east-1"
-    }
+        "region_name": "us-east-1",
+    },
 }
 ```
 
@@ -272,13 +270,8 @@ conf = {
 
 ```python
 conf = {
-    "lenv": {
-        "usid": "unique-execution-id",
-        "Identifier": "my-workflow"
-    },
-    "main": {
-        "tmpPath": "/tmp/zoo"
-    },
+    "lenv": {"usid": "unique-execution-id", "Identifier": "my-workflow"},
+    "main": {"tmpPath": "/tmp/zoo"},
     "auth_env": {
         "jwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."  # JWT token
     },
@@ -286,7 +279,7 @@ conf = {
         "domain": "demo.eoepca.org",
         "workspace_url": "https://workspace-api.demo.eoepca.org",
         "workspace_prefix": "ws",
-        "workspace_catalog_register": "true"
+        "workspace_catalog_register": "true",
     },
     "additional_parameters": {
         # Stage-in defaults
@@ -294,14 +287,13 @@ conf = {
         "STAGEIN_AWS_ACCESS_KEY_ID": "STAGEIN_KEY",
         "STAGEIN_AWS_SECRET_ACCESS_KEY": "STAGEIN_SECRET",
         "STAGEIN_AWS_REGION": "us-east-1",
-        
         # Stage-out will be overridden by Workspace API
         "STAGEOUT_AWS_SERVICEURL": "https://s3-stageout.example.com",
         "STAGEOUT_AWS_ACCESS_KEY_ID": "STAGEOUT_KEY",
         "STAGEOUT_AWS_SECRET_ACCESS_KEY": "STAGEOUT_SECRET",
         "STAGEOUT_AWS_REGION": "us-east-1",
-        "STAGEOUT_OUTPUT": "workspace-bucket"
-    }
+        "STAGEOUT_OUTPUT": "workspace-bucket",
+    },
 }
 ```
 
@@ -363,6 +355,7 @@ class SimpleExecutionHandler(CommonExecutionHandler):
         params["storage_platform"] = "eoap"
         return params
 
+
 # ❌ DON'T: Reimplement everything
 class BadHandler(CommonExecutionHandler):
     def __init__(self, conf, outputs):
@@ -379,10 +372,12 @@ def pre_execution_hook(self):
     self.username = self.extract_user_from_jwt()
     self.fetch_workspace_credentials()
 
+
 # ✅ DO: Use post_execution_hook for finalization
 def post_execution_hook(self, log, output, usage_report, tool_logs):
     super().post_execution_hook(log, output, usage_report, tool_logs)
     self.register_to_catalogue(output)
+
 
 # ❌ DON'T: Put everything in __init__
 ```
@@ -394,6 +389,7 @@ def post_execution_hook(self, log, output, usage_report, tool_logs):
 def pre_execution_hook(self):
     secrets = self.get_secrets()
     api_key = secrets.get("api_key")
+
 
 # ❌ DON'T: Hardcode credentials
 ```
@@ -417,19 +413,18 @@ StacIO.set_default(CustomStacIO)
 import pytest
 from your_service import SimpleExecutionHandler
 
+
 def test_simple_handler():
     """Test SimpleExecutionHandler"""
-    conf = {
-        "lenv": {"message": ""},
-        "additional_parameters": {}
-    }
+    conf = {"lenv": {"message": ""}, "additional_parameters": {}}
     outputs = {}
-    
+
     handler = SimpleExecutionHandler(conf, outputs)
     params = handler.get_additional_parameters()
-    
+
     assert "storage_platform" in params
     assert params["storage_platform"] == "eoap"
+
 
 def test_eoepca_handler_jwt():
     """Test EOEPCA handler with JWT"""
@@ -438,12 +433,12 @@ def test_eoepca_handler_jwt():
         "auth_env": {"jwt": "valid.jwt.token"},
         "eoepca": {
             "workspace_url": "https://workspace-api.example.com",
-            "workspace_prefix": "ws"
+            "workspace_prefix": "ws",
         },
-        "additional_parameters": {}
+        "additional_parameters": {},
     }
     outputs = {}
-    
+
     handler = EoepcaCalrissianRunnerExecutionHandler(conf, outputs)
     # Mock the requests.get call
     # Test that username is extracted correctly
