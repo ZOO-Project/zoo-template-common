@@ -1,16 +1,23 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
 name = "zoo-template-common"
-version = "0.1.8"
+dynamic = ["version"]
 description = "Shared utilities and base service templates for ZOO CWL runners"
 authors = [
-    "Aryan Khare <kharearyan78@gmail.com>",
-    "Gérald Fenoy <gerald.fenoy@geolabs.fr>"
+    { name = "Aryan Khare", email = "kharearyan78@gmail.com" },
+    { name = "Gérald Fenoy", email = "gerald.fenoy@geolabs.fr" }
 ]
 readme = "README.md"
+requires-python = ">=3.10"
 packages = [{ include = "zoo_template_common" }]
 license = "Apache-2.0"
 homepage = "https://github.com/ZOO-Project/zoo-template-common"
 repository = "https://github.com/ZOO-Project/zoo-template-common"
+Issues = "https://github.com/ZOO-Project/zoo-template-common/issues"
+Changelog = "https://github.com/ZOO-Project/zoo-template-common/blob/main/CHANGELOG.md"
 documentation = "https://zoo-project.github.io/zoo-template-common/"
 keywords = ["zoo-project", "cwl", "template", "eoepca", "stac", "workflow"]
 classifiers = [
@@ -23,18 +30,50 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.10"
-zoo-runner-common = ">=0.1.3"
-loguru = ">=0.7.0"
-pystac = ">=1.8.0"
-pyyaml = ">=6.0"
-boto3 = ">=1.28.0"
-botocore = ">=1.31.0"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+dependencies = [
+  "zoo-runner-common>=0.1.3",
+  "loguru>=0.7.0",
+  "pystac>=1.8.0",
+  "PyYAML>=6.0",
+  "boto3>=1.28.0",
+  "botocore>=1.31.0",
+  'attrs',
+  "cwl-utils>=0.14",
+]
+
+
+[tool.hatch.version]
+path = "zoo_template_common/__about__.py"
+
+
+[tool.hatch.envs.default]
+dependencies = [
+  "zoo-runner-common>=0.1.3",
+  "loguru>=0.7.0",
+  "pystac>=1.8.0",
+  "PyYAML>=6.0",
+  "boto3>=1.28.0",
+  "botocore>=1.31.0",
+  "attrs",
+  "cwl-utils>=0.14",
+]
+
+
+[tool.hatch.envs.test]
+dependencies = [
+  "pytest",
+  "pytest-cov",
+]
+
+
+[tool.hatch.envs.test.scripts]
+test = "pytest {args}"
+test-q = "pytest -q {args}"
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.black]
 line-length = 100
@@ -45,3 +84,4 @@ profile = "black"
 
 [tool.pylint.'MESSAGES CONTROL']
 max-line-length = 100
+
