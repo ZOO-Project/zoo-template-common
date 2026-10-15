@@ -38,6 +38,7 @@ pip install git+https://github.com/ZOO-Project/zoo-template-common.git@main
 from zoo_template_common import CommonExecutionHandler
 from zoo_calrissian_runner import ZooCalrissianRunner
 
+
 def my_workflow(conf, inputs, outputs):
     execution_handler = CommonExecutionHandler(conf=conf, outputs=outputs)
 
@@ -61,6 +62,7 @@ For specific use cases (e.g., EOEPCA with Workspace API integration), extend the
 from zoo_template_common import CommonExecutionHandler
 import jwt
 import requests
+
 
 class EoepcaCalrissianRunnerExecutionHandler(CommonExecutionHandler):
     def __init__(self, conf, outputs):
@@ -111,23 +113,15 @@ The handler expects configuration in the `conf` dictionary:
 
 ```python
 conf = {
-    "lenv": {
-        "usid": "unique-execution-id",
-        "Identifier": "workflow-name"
-    },
-    "main": {
-        "tmpPath": "/tmp/zoo",
-        "tmpUrl": "http://example.com/temp/"
-    },
-    "auth_env": {
-        "user": "username"
-    },
+    "lenv": {"usid": "unique-execution-id", "Identifier": "workflow-name"},
+    "main": {"tmpPath": "/tmp/zoo", "tmpUrl": "http://example.com/temp/"},
+    "auth_env": {"user": "username"},
     "additional_parameters": {
         "region_name": "us-east-1",
         "endpoint_url": "https://s3.amazonaws.com",
         "aws_access_key_id": "ACCESS_KEY",
-        "aws_secret_access_key": "SECRET_KEY"
-    }
+        "aws_secret_access_key": "SECRET_KEY",
+    },
 }
 ```
 

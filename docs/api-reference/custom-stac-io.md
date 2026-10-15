@@ -141,6 +141,7 @@ set_stac_io(CustomStacIO())
 
 # Now all PySTAC operations use CustomStacIO
 from pystac import Catalog
+
 catalog = Catalog.from_file("s3://bucket/catalog.json")
 ```
 
@@ -158,6 +159,7 @@ os.environ["AWS_S3_ENDPOINT"] = "https://s3.example.com"
 
 # Set custom I/O
 from pystac import set_stac_io
+
 set_stac_io(CustomStacIO())
 
 # Read catalog from S3
@@ -179,18 +181,11 @@ from pystac import set_stac_io
 set_stac_io(CustomStacIO())
 
 # Create catalog
-catalog = Catalog(
-    id="my-catalog",
-    description="Processing results"
-)
+catalog = Catalog(id="my-catalog", description="Processing results")
 
 # Add items
 item = Item(
-    id="result-1",
-    geometry=None,
-    bbox=None,
-    datetime=datetime.utcnow(),
-    properties={}
+    id="result-1", geometry=None, bbox=None, datetime=datetime.utcnow(), properties={}
 )
 catalog.add_item(item)
 
@@ -217,6 +212,7 @@ s3://bucket-name/path/to/object
 ```python
 # Valid S3 URLs
 "s3://my-bucket/catalog.json"
+
 "s3://results/2024/01/15/output/catalog.json"
 "s3://eoepca-data/workflows/job-123/results/catalog.json"
 ```
@@ -229,9 +225,9 @@ from botocore.exceptions import ClientError
 try:
     content = stac_io.read_text("s3://bucket/catalog.json")
 except ClientError as e:
-    if e.response['Error']['Code'] == 'NoSuchKey':
+    if e.response["Error"]["Code"] == "NoSuchKey":
         print("Object not found")
-    elif e.response['Error']['Code'] == 'NoSuchBucket':
+    elif e.response["Error"]["Code"] == "NoSuchBucket":
         print("Bucket not found")
     else:
         print(f"S3 error: {e}")
@@ -260,7 +256,7 @@ CustomStacIO creates a boto3 session with:
 session = boto3.Session(
     aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
     aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
-    region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
+    region_name=os.environ.get("AWS_DEFAULT_REGION", "us-east-1"),
 )
 ```
 
@@ -271,6 +267,7 @@ from zoo_template_common import CustomStacIO, CommonExecutionHandler
 from pystac import set_stac_io, Catalog
 import os
 
+
 class MyHandler(CommonExecutionHandler):
     def pre_execution_hook(self):
         """Setup STAC I/O"""
@@ -279,19 +276,19 @@ class MyHandler(CommonExecutionHandler):
         os.environ["AWS_ACCESS_KEY_ID"] = secrets["s3_key"]
         os.environ["AWS_SECRET_ACCESS_KEY"] = secrets["s3_secret"]
         os.environ["AWS_S3_ENDPOINT"] = "https://s3.example.com"
-        
+
         # Set custom STAC I/O
         set_stac_io(CustomStacIO())
-    
+
     def post_execution_hook(self, log, output, usage_report, tool_logs):
         """Process STAC catalog from S3"""
         super().post_execution_hook(log, output, usage_report, tool_logs)
-        
+
         # Read catalog from S3
         catalog_url = output.get("stac")
         if catalog_url and catalog_url.startswith("s3://"):
             catalog = Catalog.from_file(catalog_url)
-            
+
             # Process items
             for item in catalog.get_items():
                 print(f"Processing item: {item.id}")

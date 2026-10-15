@@ -109,10 +109,7 @@ def setOutput(self, outputName, values)
 **Example:**
 
 ```python
-handler.setOutput("result", {
-    "stac": "/tmp/catalog.json",
-    "type": "application/json"
-})
+handler.setOutput("result", {"stac": "/tmp/catalog.json", "type": "application/json"})
 ```
 
 ### get_pod_env_vars()
@@ -157,10 +154,7 @@ def get_pod_node_selector(self) -> dict
 
 ```python
 def get_pod_node_selector(self):
-    return {
-        "workload": "processing",
-        "gpu": "true"
-    }
+    return {"workload": "processing", "gpu": "true"}
 ```
 
 ### get_additional_parameters()
@@ -181,11 +175,7 @@ def get_additional_parameters(self) -> dict
 
 ```python
 def get_additional_parameters(self):
-    return {
-        "max_cores": 8,
-        "max_ram": "16G",
-        "timeout": 3600
-    }
+    return {"max_cores": 8, "max_ram": "16G", "timeout": 3600}
 ```
 
 ### get_secrets()
@@ -269,17 +259,13 @@ handler.conf  # dict
 {
     "lenv": {
         "message": "",  # Error/status messages
-        "Identifier": "service-id"
+        "Identifier": "service-id",
     },
-    "main": {
-        "tmpPath": "/tmp"
-    },
+    "main": {"tmpPath": "/tmp"},
     "inputs": {...},  # Service inputs
     "eoepca": {  # EOEPCA configuration
-        "S3": {
-            "url": "https://s3.example.com"
-        }
-    }
+        "S3": {"url": "https://s3.example.com"}
+    },
 }
 ```
 
@@ -293,12 +279,7 @@ handler.outputs  # dict or None
 
 **Structure:**
 ```python
-{
-    "result": {
-        "value": "...",
-        "mimeType": "application/json"
-    }
-}
+{"result": {"value": "...", "mimeType": "application/json"}}
 ```
 
 ## Usage Pattern
@@ -311,16 +292,17 @@ class MyHandler(CommonExecutionHandler):
         # Setup
         super().pre_execution_hook()
         self.setup_environment()
-    
+
     def post_execution_hook(self, log, output, usage_report, tool_logs):
         # Process results
         super().post_execution_hook(log, output, usage_report, tool_logs)
         self.process_results(output)
-    
+
     def get_pod_env_vars(self):
         env = super().get_pod_env_vars()
         env["CUSTOM"] = "value"
         return env
+
 
 # Use in ZOO service
 def my_service(conf, inputs, outputs):

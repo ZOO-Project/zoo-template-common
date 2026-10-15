@@ -25,9 +25,10 @@ This package provides a simple, extensible base class (`CommonExecutionHandler`)
 from zoo_template_common import CommonExecutionHandler
 from zoo_calrissian_runner import ZooCalrissianRunner
 
+
 def my_workflow(conf, inputs, outputs):
     execution_handler = CommonExecutionHandler(conf=conf, outputs=outputs)
-    
+
     runner = ZooCalrissianRunner(
         cwl=cwl,
         conf=conf,
@@ -35,7 +36,7 @@ def my_workflow(conf, inputs, outputs):
         outputs=outputs,
         execution_handler=execution_handler,
     )
-    
+
     exit_status = runner.execute()
     return exit_status
 ```
