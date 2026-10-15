@@ -7,7 +7,6 @@ on:
       - feature/**
       - develop
       - main
-      - feature/template-common
     tags:
       - v*.*.*
 
